@@ -44,20 +44,28 @@ class Color(r: Int, g: Int, b: Int) {
         if (v <= 0) 0
         else if (v >= 255) 255
         else v
+
+    companion object {
+        val BLACK = Color(0,0,0)
+        val RED = Color(255,0,0)
+        val GREEN = Color(0,255,0)
+        val BLUE = Color(0,0,255)
+
+        fun fromHex(arg: Int): Color {
+            val red = (arg and 0xFF0000) shr 16
+            val green = (arg and 0xFF00) shr 8
+            val blue = arg and 0xFF
+            return Color(red, green, blue)
+        }
+    }
 }
 
-fun drawColor(width: Int, height: Int, path: String) {
-    val image = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
-    val pixels = IntArray(width * height) { 0xFF0000 }
-    image.setRGB(0,0,width,height, pixels, 0, width)
-    ImageIO.write(image, "JPG", File(path))
-}
+/*
+    Exercise: create a companion object for Color so that you can write
+        Color.BLACK, Color.RED, ...
+        Color.fromHex(int): Color instance out of that
+ */
 
 fun main() {
-    val red = Color(255, 0, 0)
-    val green = Color(-1, 561566, 0)
-//    red.draw(20, 20, "src/main/resources/red.jpg")
-//    green.draw(20, 20, "src/main/resources/green.jpg")
-    val magenta = Color(255, 0, 255)
-    magenta.draw(20, 20, "src/main/resources/magenta.jpg")
+    Color.fromHex(0x888888).draw(20,20, "src/main/resources/gray.jpg")
 }

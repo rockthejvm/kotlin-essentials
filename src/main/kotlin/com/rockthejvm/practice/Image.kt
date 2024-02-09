@@ -16,15 +16,6 @@ class Image(val buffImage: BufferedImage) {
     fun saveResource(path: String) =
         save("src/main/resources/$path")
 
-    /*
-        1. check dimensions - return null if any dimension is invalid
-        2. create a black image of width x height
-        3. iterate through coords startX ..< startX+w, startY ..< startY+h
-            - use buffImage.getRGB to get a pixel from the original image
-            - use resulImage.buffImage.setRGB to set a pixel in the result
-            - calculate the coordinates
-        4. return the result image
-     */
     fun crop(startX: Int, startY: Int, w: Int, h: Int): Image? {
         // dimension checks
         if (startX < 0 || startX >= width || startY < 0 || startY >= height) return null

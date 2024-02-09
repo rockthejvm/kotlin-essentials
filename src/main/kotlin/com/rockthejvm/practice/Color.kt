@@ -8,18 +8,6 @@ import javax.imageio.ImageIO
 // 24bit integer = Int
 // 00000000rrrrrrrrggggggggbbbbbbbb
 
-/*
-    Exercise:
-    1. Define a Color class that takes 3 ints as arguments:
-        - red
-        - green
-        - blue
-    2. Make sure that the properties of the color (red, green, blue, all as integers) are always in between 0 and 255
-    3. Add a method toInt() that returns a SINGLE integer with the repr above
-        00000000rrrrrrrrggggggggbbbbbbbb
-        use shl, shr, and, or, xor,...
-    4. Add a draw(width, height, path) that draws an image of width x height, all with the same color
- */
 class Color(r: Int, g: Int, b: Int) {
     val red: Int = clampColor(r) // 000000000000000000000000rrrrrrrr
     val green: Int = clampColor(g) // 000000000000000000000000gggggggg
@@ -50,6 +38,7 @@ class Color(r: Int, g: Int, b: Int) {
         val RED = Color(255,0,0)
         val GREEN = Color(0,255,0)
         val BLUE = Color(0,0,255)
+        val GRAY = Color(128,128,128)
 
         fun fromHex(arg: Int): Color {
             val red = (arg and 0xFF0000) shr 16
@@ -59,12 +48,6 @@ class Color(r: Int, g: Int, b: Int) {
         }
     }
 }
-
-/*
-    Exercise: create a companion object for Color so that you can write
-        Color.BLACK, Color.RED, ...
-        Color.fromHex(int): Color instance out of that
- */
 
 fun main() {
     Color.fromHex(0x888888).draw(20,20, "src/main/resources/gray.jpg")

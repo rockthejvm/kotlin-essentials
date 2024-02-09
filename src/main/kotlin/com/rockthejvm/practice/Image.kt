@@ -1,14 +1,18 @@
 package com.rockthejvm.practice
 
+import java.awt.Graphics
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
 
-
 // crop a picture
-class Image(val buffImage: BufferedImage) {
+class Image(private val buffImage: BufferedImage) { // NEVER expose mutable state outside this class
     val width = buffImage.width
     val height = buffImage.height
+
+    fun draw(g: Graphics) {
+        g.drawImage(buffImage, 0, 0, null)
+    }
 
     fun save(path: String) =
         ImageIO.write(buffImage, "JPG", File(path))

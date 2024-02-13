@@ -50,5 +50,6 @@ class Color(r: Int, g: Int, b: Int) {
 }
 
 fun main() {
-    Color.fromHex(0x888888).draw(20,20, "src/main/resources/gray.jpg")
+    // Color.fromHex(0x888888).draw(20,20, "src/main/resources/gray.jpg")
+    Color.BLUE.draw(1000, 560, "src/main/resources/blue.jpg")
 }

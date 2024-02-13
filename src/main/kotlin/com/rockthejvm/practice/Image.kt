@@ -10,6 +10,12 @@ class Image(private val buffImage: BufferedImage) { // NEVER expose mutable stat
     val width = buffImage.width
     val height = buffImage.height
 
+    fun getColor(x: Int, y: Int): Color =
+        Color.fromHex(buffImage.getRGB(x, y))
+
+    fun setColor(x: Int, y: Int, color: Color) =
+        buffImage.setRGB(x,y,color.toInt())
+
     fun draw(g: Graphics) {
         g.drawImage(buffImage, 0, 0, null)
     }

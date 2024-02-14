@@ -68,12 +68,15 @@ object App {
                     else
                         imagePanel.getImage().saveResource(words[1])
                 "exit" -> exitProcess(0)
-                else -> {
-                    val transformation = Transformation.parse(command)
-                    val newImage = transformation.process(imagePanel.getImage())
-                    imagePanel.replaceImage(newImage)
-                    frame.pack()
-                }
+                else ->
+                    if (!this::frame.isInitialized)
+                        println("Error: Must have an image loaded before running any transformation.")
+                    else {
+                        val transformation = Transformation.parse(command)
+                        val newImage = transformation(imagePanel.getImage())
+                        imagePanel.replaceImage(newImage)
+                        frame.pack()
+                    }
             }
         }
     }

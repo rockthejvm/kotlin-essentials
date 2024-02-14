@@ -26,7 +26,8 @@ import java.io.IOException
  */
 
 interface Transformation {
-    fun process(image: Image): Image
+    operator fun invoke(image: Image): Image
+
     companion object {
         fun parse(string: String): Transformation {
             val words = string.split(" ")
@@ -64,7 +65,7 @@ interface Transformation {
 }
 
 class Crop(val x: Int, val y: Int, val w: Int, val h: Int): Transformation {
-    override fun process(image: Image): Image =
+    override fun invoke(image: Image): Image =
         try {
             image.crop(x,y,w,h)!! // will crash if the coords are out of bounds
         } catch (e: Exception) {
@@ -82,7 +83,7 @@ class Crop(val x: Int, val y: Int, val w: Int, val h: Int): Transformation {
     4. return the image
  */
 class Blend(val fgImage: Image, val mode: BlendMode): Transformation {
-    override fun process(bgImage: Image): Image {
+    override fun invoke(bgImage: Image): Image {
         // 1
         if (fgImage.width != bgImage.width || fgImage.height != bgImage.height) {
             println("Error: images don't have the same sizes: ${fgImage.width} x ${fgImage.height} vs  ${bgImage.width} x ${bgImage.height} ")
@@ -110,5 +111,5 @@ class Blend(val fgImage: Image, val mode: BlendMode): Transformation {
 }
 
 object Noop: Transformation {
-    override fun process(image: Image): Image = image
+    override fun invoke(image: Image): Image = image
 }

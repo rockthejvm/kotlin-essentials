@@ -9,7 +9,7 @@ object SpecialMethods {
         }
 
         // a "unique" number for this instance
-        // IMPORTANT: 2 "equal" instances should produce the same hashCode
+        // IMPORTANT: two "equal" instances should produce the same hashCode
         // used in hash-based data structures (sets, maps)
         override fun hashCode(): Int =
             name.hashCode() * 31 + age
@@ -78,10 +78,7 @@ object SpecialMethods {
             }
         }
 
-
-
-        // contains operator
-        // 2.0 in cn
+        // `2.0 in cn` is the same as `cn.contains(2.0)`
         // useful for collections
         operator fun contains(v: Double): Boolean =
             re == v || im == v

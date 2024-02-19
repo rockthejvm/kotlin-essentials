@@ -58,6 +58,8 @@ interface Transformation {
                         println("Invalid blend format. Usage: 'blend [path] [mode]'")
                         Noop
                     }
+                "invert" -> Invert
+                "grayscale" -> Grayscale
                 else -> Noop
             }
         }
@@ -109,6 +111,36 @@ class Blend(val fgImage: Image, val mode: BlendMode): Transformation {
         return result
     }
 }
+
+abstract class PixelTransformation(val pixelFun: (Color) -> Color): Transformation {
+    override fun invoke(image: Image): Image {
+        val width = image.width
+        val height = image.height
+        val result = Image.black(width, height)
+        for (x in 0 ..< width)
+            for (y in 0 ..< height) {
+                val originalColor = image.getColor(x,y)
+                val newColor = pixelFun(originalColor)
+                result.setColor(x,y, newColor)
+            }
+
+        return result
+    }
+}
+
+object Invert: PixelTransformation({ color ->
+    Color(
+        255 - color.red,
+        255 - color.green,
+        255 - color.blue,
+    )
+})
+
+object Grayscale: PixelTransformation({ color ->
+    val avg = (color.red + color.green + color.blue) / 3
+    Color(avg, avg, avg) // last expression is the value of the lambda
+})
+
 
 object Noop: Transformation {
     override fun invoke(image: Image): Image = image

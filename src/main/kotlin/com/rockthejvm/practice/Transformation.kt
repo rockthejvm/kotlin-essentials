@@ -60,6 +60,10 @@ interface Transformation {
                     }
                 "invert" -> Invert
                 "grayscale" -> Grayscale
+                "sharpen" -> KernelFilter(Kernel.sharpen)
+                "blur" -> KernelFilter(Kernel.blur)
+                "edge" -> KernelFilter(Kernel.edge)
+                "emboss" -> KernelFilter(Kernel.emboss)
                 else -> Noop
             }
         }
@@ -144,4 +148,89 @@ object Grayscale: PixelTransformation({ color ->
 
 object Noop: Transformation {
     override fun invoke(image: Image): Image = image
+}
+
+// kernel transformation
+data class Window(val width: Int, val height: Int, val values: List<Color>)
+data class Kernel(val width: Int, val height: Int, val values: List<Double>) {
+    // property: all the values should sum up to 1.0
+
+    fun normalize(): Kernel {
+        val sum = values.sum()
+        if (sum == 0.0) return this
+        return Kernel(width, height, values.map { it / sum })
+    }
+
+    // window and kernel must have the same width x height
+    // multiply every pixel with every CORRESPONDING double
+    // [a,b,c] * [x,y,z] = [a * x, b * y, c * z]
+    // sum up all the values to a single color = a * x + b * y + c * z
+    // "convolution"
+    operator fun times(window: Window): Color {
+        if (width != window.width || height != window.height)
+            throw IllegalArgumentException("Kernel and window must have the same dimensions")
+
+        val r = window.values
+            .map { it.red }
+            .zip(values) { a,b -> a * b }
+            .sum()
+            .toInt()
+        val g = window.values
+            .map { it.green }
+            .zip(values) { a,b -> a * b }
+            .sum()
+            .toInt()
+        val b = window.values
+            .map { it.blue }
+            .zip(values) { a,b -> a * b }
+            .sum()
+            .toInt()
+
+        return Color(r, g, b)
+    }
+
+    companion object {
+        val sharpen = Kernel(3,3, listOf(
+            0.0, -1.0, 0.0,
+            -1.0, 5.0, -1.0,
+            0.0, -1.0, 0.0
+        )).normalize()
+
+        val blur = Kernel(3,3, listOf(
+            1.0, 2.0, 1.0,
+            2.0, 4.0, 2.0,
+            1.0, 2.0, 1.0
+        )).normalize()
+
+        val edge = Kernel(3,3, listOf(
+            1.0, 0.0, -1.0,
+            2.0, 0.0, -2.0,
+            1.0, 0.0, -1.0
+        ))
+
+        val emboss = Kernel(3,3, listOf(
+            -2.0, -1.0, 0.0,
+            -1.0, 1.0, 1.0,
+            0.0, 1.0, 2.0
+        ))
+    }
+}
+
+data class KernelFilter(val kernel: Kernel): Transformation {
+    override fun invoke(image: Image): Image =
+        Image.fromColors(
+            image.width,
+            image.height,
+            (0 ..< image.height).flatMap { y ->
+                (0 ..< image.width).map { x ->
+                    kernel * image.window(x,y, kernel.width, kernel.height)
+                }
+            }
+        )
+        // 3
+        // for every pixel in the image,
+        //       create a Window(x,y, kernel.width, kernel.height)
+        //       multiply the kernel with the window you just made -> returns a new pixel
+        //       set the resulting pixel in the resulting image
+
 }

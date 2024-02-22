@@ -33,6 +33,33 @@ class Color(r: Int, g: Int, b: Int) {
         else if (v >= 255) 255
         else v
 
+    operator fun plus(other: Color): Color =
+        Color(
+            clampColor(red + other.red),
+            clampColor(green + other.green),
+            clampColor(blue + other.blue)
+        )
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Color
+
+        if (red != other.red) return false
+        if (green != other.green) return false
+        if (blue != other.blue) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = red
+        result = 31 * result + green
+        result = 31 * result + blue
+        return result
+    }
+
     companion object {
         val BLACK = Color(0,0,0)
         val RED = Color(255,0,0)

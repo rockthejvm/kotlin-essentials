@@ -139,8 +139,8 @@ fun testPrime(n: Int): Boolean {
     no stack frames to allocate
  */
 tailrec fun testPrimeRec(n: Int, d: Int = 2): Boolean =
-    if (n % d == 0) false
-    else if (d > n/2) true
+    if (d > n/2) true
+    else if (n % d == 0) false
     else testPrimeRec(n, d + 1) // recursive call is computed LAST on this branch
 //       ^^^^^^^^^^^^^^^^^^^^^ tail position == TAIL RECURSIVE
 
